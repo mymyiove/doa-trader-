@@ -10,11 +10,13 @@ router = APIRouter()
 static_dir = Path(__file__).parent.parent.parent / "web" / "static"
 router.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+# 대시보드 HTML
 @router.get("/", response_class=HTMLResponse)
 async def dashboard_home(request: Request):
     html_path = Path(__file__).parent.parent.parent / "web" / "index.html"
     return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
 
+# 최근 로그 조회 API
 @router.get("/logs")
-async def get_logs():
-    return audit.get_recent()
+async def get_logs(limit: int = 50):
+    return audit.get_recent(limit)
