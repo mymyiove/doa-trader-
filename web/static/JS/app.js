@@ -46,3 +46,15 @@ document.getElementById("killBtn").addEventListener("click", () => {
 // 5초마다 로그 갱신
 setInterval(fetchLogs, 5000);
 fetchLogs();
+
+// 현재 시간 표시
+function updateTime() {
+    const now = new Date();
+    document.getElementById("currentTime").textContent = now.toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// 시장 상태 & 계좌 잔고 (샘플, API 연결 가능)
+document.getElementById("marketStatus").textContent = "장외";
+document.getElementById("accountBalance").textContent = "₩ 100,000,000";
