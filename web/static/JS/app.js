@@ -20,5 +20,4 @@ document.getElementById("stopBtn").addEventListener("click", () => {
 document.getElementById("killBtn").addEventListener("click", () => {
     fetch("/orders/kill", { method: "POST" })
         .then(res => res.json())
-        .then(data => addLog("긴급 중지: " + JSON.stringify(data)));
-});
+        .then(data =>
