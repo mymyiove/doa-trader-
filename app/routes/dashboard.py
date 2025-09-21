@@ -86,13 +86,10 @@ async def fetch_account_balance():
 # === 가격 데이터 (차트용) ===
 @router.get("/price")
 async def get_price():
-    """
-    KIS 시세 API: 분봉 데이터 조회
-    """
     kis_base = os.getenv("KIS_API_URI_BASE")
     kis_app_key = os.getenv("KIS_APP_KEY")
     kis_app_secret = os.getenv("KIS_APP_SECRET")
-    symbol = os.getenv("CHART_SYMBOL", "005930")  # 차트 기본 종목
+    symbol = os.getenv("CHART_SYMBOL", "005930")
     if not all([kis_base, kis_app_key, kis_app_secret, symbol]):
         return []
     try:
@@ -100,11 +97,11 @@ async def get_price():
             "appkey": kis_app_key,
             "appsecret": kis_app_secret,
             "Content-Type": "application/json",
-            "tr_id": "FHKST03010200"  # 국내주식 기간별시세(분)
+            "tr_id": "FHKST03010200"
         }
         params = {
             "FID_ETC_CLS_CODE": "",
-            "FID_COND_MRKT_DIV_CODE": "J",  # 주식
+            "FID_COND_MRKT_DIV_CODE": "J",
             "FID_INPUT_ISCD": symbol,
             "FID_INPUT_DATE_1": datetime.now().strftime("%Y%m%d"),
             "FID_INPUT_HOUR_1": "",
@@ -117,7 +114,7 @@ async def get_price():
             data = r.json()
             output = data.get("output2", [])
             prices = []
-            for row in reversed(output[-10:]):  # 최근 10개만
+            for row in reversed(output[-10:]):
                 prices.append({
                     "time": row.get("stck_cntg_hour", "")[:2] + ":" + row.get("stck_cntg_hour", "")[2:],
                     "price": int(row.get("stck_prpr", 0))
