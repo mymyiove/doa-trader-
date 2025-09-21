@@ -106,6 +106,29 @@ header h1 {
     background: linear-gradient(90deg, #ff6e6e, #ff5252);
 }
 
+/* ===== 버튼 로딩 스피너 ===== */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    transform: translateY(-50%);
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* ===== 차트 카드 ===== */
 .chart-card canvas {
     background: rgba(255,255,255,0.02);
@@ -161,6 +184,36 @@ tbody tr:hover {
     white-space: pre-wrap;
     word-wrap: break-word;
     color: #c9d1d9;
+}
+
+/* ===== 토스트 알림 ===== */
+#toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+.toast.success { background: #00c853; }
+.toast.error { background: #e53935; }
+.toast.info { background: #2196f3; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
 }
 
 /* ===== 스크롤바 ===== */
