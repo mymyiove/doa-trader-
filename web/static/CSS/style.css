@@ -1,36 +1,99 @@
+/* ===== 기본 레이아웃 ===== */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background: #f4f4f4;
+    color: #333;
 }
+
 header {
     background: #222;
     color: #fff;
-    padding: 10px;
+    padding: 15px;
 }
+
 header h1 {
     margin: 0;
+    font-size: 1.5em;
 }
+
 .buttons {
     margin-top: 10px;
 }
+
 button {
     margin-right: 5px;
-    padding: 8px 12px;
+    padding: 8px 14px;
     border: none;
+    border-radius: 4px;
     background: #4CAF50;
     color: white;
     cursor: pointer;
+    font-size: 0.9em;
 }
+
 button:hover {
     background: #45a049;
 }
-#timeline {
+
+main {
     padding: 20px;
 }
+
+/* ===== 로그 영역 ===== */
+#timeline {
+    margin-top: 10px;
+}
+
 #logContainer {
     background: white;
     padding: 10px;
     border-radius: 5px;
-    min-height: 200px;
+    min-height: 250px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* ===== 로그 항목 ===== */
+.log-entry {
+    padding: 6px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.log-entry:hover {
+    background: #f0f0f0;
+}
+
+/* 타입별 색상 */
+.log-entry.info {
+    background: #eef;
+}
+
+.log-entry.decision {
+    background: #efe;
+}
+
+.log-entry.trade {
+    background: #ffe;
+}
+
+.log-entry.error {
+    background: #fee;
+    color: #b30000;
+    font-weight: bold;
+}
+
+/* 세부 정보 펼침 */
+.log-entry pre {
+    background: #fafafa;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
