@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>DOA Trader Dashboard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/ui/static/css/style.css">
 </head>
 <body>
     <header>
         <h1>DOA Trader</h1>
-        <button id="startBtn">시작</button>
-        <button id="stopBtn">종료</button>
-        <button id="killBtn">전체 중지</button>
+        <div class="buttons">
+            <button id="startBtn">시작</button>
+            <button id="stopBtn">종료</button>
+            <button id="killBtn">전체 중지</button>
+        </div>
     </header>
     <main>
         <section id="timeline">
@@ -18,6 +20,6 @@
             <div id="logContainer"></div>
         </section>
     </main>
-    <script src="/static/js/app.js"></script>
+    <script src="/ui/static/js/app.js"></script>
 </body>
 </html>
