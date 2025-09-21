@@ -1,11 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 router = APIRouter()
 
-@router.get("/")
-async def dashboard_home():
-    return {
-        "status": "ok",
-        "message": "DOA Trader Dashboard is running",
-        "note": "여기에 나중에 대시보드 HTML/JS를 연결할 예정"
-    }
+# 정적 파일 서빙 (CSS, JS)
+static_dir = Path(__file__).parent.parent.parent / "web" / "static"
+router.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@router.get("/", response_class=HTMLResponse)
+async def dashboard_home(request: Request):
+    html_path = Path(__file__).parent.parent.parent / "web" / "index.html"
+    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
