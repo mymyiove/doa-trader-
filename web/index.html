@@ -4,38 +4,76 @@
     <meta charset="UTF-8">
     <title>DOA Trader Dashboard</title>
     <link rel="stylesheet" href="/ui/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
-        <div class="header-top">
-            <h1>💹 DOA Trader</h1>
-            <div class="market-info">
-                <div class="info-item">
+        <h1>💹 DOA Trader</h1>
+    </header>
+
+    <main class="dashboard">
+        <!-- 상태 카드 -->
+        <div class="card status-card">
+            <h2>📊 현재 상태</h2>
+            <div class="status-grid">
+                <div class="status-item">
                     <span class="label">현재 시간</span>
                     <span id="currentTime">--:--:--</span>
                 </div>
-                <div class="info-item">
+                <div class="status-item">
                     <span class="label">시장 상태</span>
                     <span id="marketStatus">-</span>
                 </div>
-                <div class="info-item">
+                <div class="status-item">
                     <span class="label">계좌 잔고</span>
                     <span id="accountBalance">-</span>
                 </div>
             </div>
         </div>
-        <div class="buttons">
-            <button id="startBtn">🚀 시작</button>
-            <button id="stopBtn">⏹ 종료</button>
-            <button id="killBtn">💥 긴급중지</button>
+
+        <!-- 제어 카드 -->
+        <div class="card control-card">
+            <h2>⚙️ 거래 제어</h2>
+            <div class="button-group">
+                <button id="startBtn" class="btn start">🚀 시작</button>
+                <button id="stopBtn" class="btn stop">⏹ 종료</button>
+                <button id="killBtn" class="btn kill">💥 긴급중지</button>
+            </div>
         </div>
-    </header>
-    <main>
-        <section id="timeline">
+
+        <!-- 가격 흐름 카드 -->
+        <div class="card chart-card">
+            <h2>📈 가격 흐름</h2>
+            <canvas id="priceChart" height="150"></canvas>
+        </div>
+
+        <!-- 보유 종목 카드 -->
+        <div class="card holdings-card">
+            <h2>📋 보유 종목 현황</h2>
+            <table id="holdingsTable">
+                <thead>
+                    <tr>
+                        <th>종목코드</th>
+                        <th>종목명</th>
+                        <th>보유수량</th>
+                        <th>평단가</th>
+                        <th>현재가</th>
+                        <th>손익</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" style="text-align:center;">데이터 없음</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 로그 카드 -->
+        <div class="card log-card">
             <h2>📜 실시간 로그</h2>
-            <div id="logContainer"></div>
-        </section>
+            <div id="logContainer" class="log-container"></div>
+        </div>
     </main>
+
     <script src="/ui/static/js/app.js"></script>
 </body>
 </html>
