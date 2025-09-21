@@ -1,3 +1,5 @@
+import os
+import httpx
 from app.log import audit
 
 _running = False
@@ -9,8 +11,6 @@ def start():
         return
     _running = True
     audit.record("거래 루프 시작됨", "info")
-    # TODO: 스케줄러나 전략 루틴 호출 연결
-    # 예: intraday_loop.run() 주기적 실행
 
 def stop():
     global _running
@@ -19,19 +19,57 @@ def stop():
         return
     _running = False
     audit.record("거래 루프 정상 종료", "info")
-    # TODO: 스케줄러 중지 로직
 
 def kill():
     global _running
     _running = False
     audit.record("거래 루프 긴급 중지", "error")
-    # TODO: 모든 포지션 청산, 스케줄러 강제 종료
 
 async def place(order: dict):
     """
-    주문 실행 (현재는 모의 실행)
+    실거래 주문 실행 (KIS API)
     order 예시: {"symbol": "005930", "side": "buy", "qty": 1}
     """
-    audit.record(f"모의 주문 실행: {order}", "trade")
-    # TODO: 실제 API 연동 시 체결 결과 반환
-    return {"status": "ok", "order": order}
+    kis_base = os.getenv("KIS_API_URI_BASE")
+    kis_app_key = os.getenv("KIS_APP_KEY")
+    kis_app_secret = os.getenv("KIS_APP_SECRET")
+    account = os.getenv("KIS_ACCOUNT_NUM")
+    account_suffix = os.getenv("KIS_ACCOUNT_SUFFIX", "01")
+
+    if not all([kis_base, kis_app_key, kis_app_secret, account]):
+        audit.record("KIS API 환경변수 미설정 → 주문 불가", "error")
+        return {"status": "error", "reason": "KIS API 환경변수 없음"}
+
+    try:
+        # 매수/매도 구분
+        tr_id = "TTTC0802U" if order["side"] == "buy" else "TTTC0801U"
+
+        headers = {
+            "appkey": kis_app_key,
+            "appsecret": kis_app_secret,
+            "Content-Type": "application/json",
+            "tr_id": tr_id
+        }
+
+        payload = {
+            "CANO": account,
+            "ACNT_PRDT_CD": account_suffix,
+            "PDNO": order["symbol"],
+            "ORD_DVSN": "01",  # 지정가
+            "ORD_QTY": str(order["qty"]),
+            "ORD_UNPR": "0"    # 시장가 주문 시 0
+        }
+
+        endpoint = f"{kis_base}/uapi/domestic-stock/v1/trading/order-cash"
+
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.post(endpoint, headers=headers, json=payload)
+            r.raise_for_status()
+            data = r.json()
+
+        audit.record(f"실거래 주문 실행: {order}", "trade", {"response": data})
+        return {"status": "ok", "response": data}
+
+    except Exception as e:
+        audit.record(f"주문 실패: {e}", "error")
+        return {"status": "error", "reason": str(e)}
