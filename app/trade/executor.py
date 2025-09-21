@@ -27,8 +27,8 @@ def kill():
 
 async def place(order: dict):
     """
-    실거래 주문 실행 (KIS API)
-    order 예시: {"symbol": "005930", "side": "buy", "qty": 1}
+    KIS API 실거래 주문
+    order 예시: {"symbol": "005930", "side": "buy", "qty": 1, "price": 0}
     """
     kis_base = os.getenv("KIS_API_URI_BASE")
     kis_app_key = os.getenv("KIS_APP_KEY")
@@ -41,7 +41,6 @@ async def place(order: dict):
         return {"status": "error", "reason": "KIS API 환경변수 없음"}
 
     try:
-        # 매수/매도 구분
         tr_id = "TTTC0802U" if order["side"] == "buy" else "TTTC0801U"
 
         headers = {
@@ -55,9 +54,9 @@ async def place(order: dict):
             "CANO": account,
             "ACNT_PRDT_CD": account_suffix,
             "PDNO": order["symbol"],
-            "ORD_DVSN": "01",  # 지정가
+            "ORD_DVSN": "03" if order["price"] == 0 else "01",  # 03=시장가, 01=지정가
             "ORD_QTY": str(order["qty"]),
-            "ORD_UNPR": "0"    # 시장가 주문 시 0
+            "ORD_UNPR": str(order["price"])
         }
 
         endpoint = f"{kis_base}/uapi/domestic-stock/v1/trading/order-cash"
