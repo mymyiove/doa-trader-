@@ -1,5 +1,19 @@
 let priceChart;
 
+// ===== 토스트 알림 =====
+function showToast(type, message) {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        if (toast.parentNode) {
+            container.removeChild(toast);
+        }
+    }, 3000);
+}
+
 // ===== 로그 한 줄 추가 =====
 function addLog(entry) {
     const logContainer = document.getElementById("logContainer");
@@ -102,4 +116,83 @@ function fetchPriceData() {
         .then(data => {
             if (!priceChart) return;
             priceChart.data.labels = data.map(p => p.time);
-            priceChart.data.datasets[0].data = data.map(p =>
+            priceChart.data.datasets[0].data = data.map(p => p.price);
+            priceChart.update();
+        })
+        .catch(err => console.error("가격 데이터 불러오기 실패", err));
+}
+
+// ===== 버튼 로딩 상태 =====
+function setLoading(btn, isLoading) {
+    if (isLoading) {
+        btn.classList.add("loading");
+    } else {
+        btn.classList.remove("loading");
+    }
+}
+
+// ===== 버튼 이벤트 =====
+document.getElementById("startBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("startBtn");
+    setLoading(btn, true);
+    try {
+        const res = await fetch("/orders/start", { method: "POST" });
+        const data = await res.json();
+        addLog({ timestamp: new Date().toLocaleTimeString(), type: "info", message: "거래 시작", details: data });
+        showToast("success", "거래 루프 시작됨 ✅");
+    } catch (err) {
+        showToast("error", "거래 시작 실패 ❌");
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+document.getElementById("stopBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("stopBtn");
+    setLoading(btn, true);
+    try {
+        const res = await fetch("/orders/stop", { method: "POST" });
+        const data = await res.json();
+        addLog({ timestamp: new Date().toLocaleTimeString(), type: "info", message: "거래 종료", details: data });
+        showToast("info", "거래 루프 종료됨 ⏹️");
+    } catch (err) {
+        showToast("error", "거래 종료 실패 ❌");
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+document.getElementById("killBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("killBtn");
+    setLoading(btn, true);
+    try {
+        const res = await fetch("/orders/kill", { method: "POST" });
+        const data = await res.json();
+        addLog({ timestamp: new Date().toLocaleTimeString(), type: "error", message: "긴급 중지", details: data });
+        showToast("error", "긴급 중지 실행됨 💥");
+    } catch (err) {
+        showToast("error", "긴급 중지 실패 ❌");
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+// ===== 현재 시간 표시 =====
+function updateTime() {
+    const now = new Date();
+    document.getElementById("currentTime").textContent = now.toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// ===== 초기화 & 주기적 갱신 =====
+initPriceChart();
+fetchLogs();
+fetchStatus();
+fetchHoldings();
+fetchPriceData();
+
+setInterval(fetchLogs, 5000);
+setInterval(fetchStatus, 10000);
+setInterval(fetchHoldings, 15000);
+setInterval(fetchPriceData, 10000);
