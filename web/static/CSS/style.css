@@ -1,24 +1,27 @@
+/* ===== 기본 설정 ===== */
 body {
     font-family: 'Segoe UI', Roboto, sans-serif;
     margin: 0;
-    background: #0d1117;
+    background: linear-gradient(135deg, #0d1117, #0b0f14);
     color: #e6edf3;
 }
 
+/* ===== 헤더 ===== */
 header {
-    background: linear-gradient(90deg, #161b22, #1f2937);
     padding: 20px;
-    border-bottom: 1px solid #30363d;
     text-align: center;
+    border-bottom: 2px solid rgba(0, 230, 118, 0.4);
+    box-shadow: 0 4px 12px rgba(0,230,118,0.15);
 }
-
 header h1 {
     margin: 0;
-    font-size: 2em;
+    font-size: 2.2em;
     font-weight: 700;
     color: #00e676;
+    letter-spacing: 1px;
 }
 
+/* ===== 대시보드 레이아웃 ===== */
 .dashboard {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -26,61 +29,111 @@ header h1 {
     padding: 20px;
 }
 
+/* ===== 카드 공통 ===== */
 .card {
-    background: #161b22;
-    border-radius: 10px;
+    background: rgba(22, 27, 34, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 14px;
     padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    border: 1px solid #30363d;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
 .card h2 {
     margin-top: 0;
     font-size: 1.2em;
     color: #80cbc4;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     padding-bottom: 8px;
     margin-bottom: 15px;
 }
 
+/* ===== 상태 카드 ===== */
 .status-grid {
     display: grid;
-    gap: 10px;
+    gap: 12px;
 }
-
 .status-item {
     display: flex;
     justify-content: space-between;
+    font-size: 1em;
 }
-
 .label {
     color: #8b949e;
 }
 
+/* ===== 버튼 그룹 ===== */
 .button-group {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
-
 .btn {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.95em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    color: #fff;
+}
+.btn.start {
+    background: linear-gradient(90deg, #00e676, #00c853);
+    box-shadow: 0 2px 6px rgba(0,230,118,0.4);
+}
+.btn.start:hover {
+    background: linear-gradient(90deg, #00ff80, #00e676);
+}
+.btn.stop {
+    background: linear-gradient(90deg, #ffeb3b, #fdd835);
+    color: #000;
+    box-shadow: 0 2px 6px rgba(255,235,59,0.4);
+}
+.btn.stop:hover {
+    background: linear-gradient(90deg, #fff176, #ffeb3b);
+}
+.btn.kill {
+    background: linear-gradient(90deg, #ff5252, #e53935);
+    box-shadow: 0 2px 6px rgba(255,82,82,0.4);
+}
+.btn.kill:hover {
+    background: linear-gradient(90deg, #ff6e6e, #ff5252);
 }
 
-.btn.start { background: #00e676; color: #000; }
-.btn.start:hover { background: #00c853; }
-.btn.stop { background: #ffeb3b; color: #000; }
-.btn.stop:hover { background: #fdd835; }
-.btn.kill { background: #ff5252; color: #fff; }
-.btn.kill:hover { background: #e53935; }
+/* ===== 차트 카드 ===== */
+.chart-card canvas {
+    background: rgba(255,255,255,0.02);
+    border-radius: 8px;
+    padding: 10px;
+}
 
+/* ===== 보유 종목 표 ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    text-align: center;
+}
+th {
+    background: rgba(255,255,255,0.05);
+    color: #80cbc4;
+}
+tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+}
+
+/* ===== 로그 ===== */
 .log-container {
     display: flex;
     flex-direction: column-reverse;
@@ -88,22 +141,19 @@ header h1 {
     max-height: 400px;
     overflow-y: auto;
 }
-
 .log-entry {
     padding: 10px;
     border-radius: 6px;
-    background: #0d1117;
+    background: rgba(13,17,23,0.9);
     border-left: 5px solid transparent;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-
 .log-entry.info { border-color: #58a6ff; }
 .log-entry.decision { border-color: #3fb950; }
 .log-entry.trade { border-color: #f2cc60; }
 .log-entry.error { border-color: #f85149; }
-
 .log-entry pre {
-    background: #161b22;
+    background: rgba(22,27,34,0.95);
     padding: 8px;
     margin-top: 6px;
     border-radius: 4px;
@@ -113,23 +163,7 @@ header h1 {
     color: #c9d1d9;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
-}
-
-th, td {
-    padding: 8px;
-    border-bottom: 1px solid #30363d;
-    text-align: center;
-}
-
-th {
-    background: #1f2937;
-    color: #80cbc4;
-}
-
+/* ===== 스크롤바 ===== */
 .log-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -139,4 +173,17 @@ th {
 }
 .log-container::-webkit-scrollbar-thumb:hover {
     background: #777;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 600px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    .button-group {
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+    }
 }
