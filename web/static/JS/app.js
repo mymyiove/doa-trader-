@@ -1,4 +1,4 @@
-// 로그 한 줄 추가
+// ===== 로그 한 줄 추가 =====
 function addLog(entry) {
     const logContainer = document.getElementById("logContainer");
     const div = document.createElement("div");
@@ -18,7 +18,7 @@ function addLog(entry) {
     logContainer.prepend(div);
 }
 
-// 서버에서 로그 가져오기
+// ===== 서버에서 로그 가져오기 =====
 function fetchLogs() {
     fetch("/ui/logs")
         .then(res => res.json())
@@ -29,7 +29,7 @@ function fetchLogs() {
         .catch(err => console.error("로그 불러오기 실패", err));
 }
 
-// 버튼 이벤트
+// ===== 버튼 이벤트 =====
 document.getElementById("startBtn").addEventListener("click", () => {
     fetch("/orders/start", { method: "POST" })
         .then(res => res.json())
@@ -63,7 +63,7 @@ document.getElementById("killBtn").addEventListener("click", () => {
         }));
 });
 
-// 현재 시간 표시
+// ===== 현재 시간 표시 =====
 function updateTime() {
     const now = new Date();
     document.getElementById("currentTime").textContent = now.toLocaleTimeString();
@@ -71,10 +71,19 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// 시장 상태 & 계좌 잔고 (샘플, 나중에 API 연결)
-document.getElementById("marketStatus").textContent = "장외";
-document.getElementById("accountBalance").textContent = "₩ 100,000,000";
+// ===== 시장 상태 & 계좌 잔고 갱신 =====
+function fetchStatus() {
+    fetch("/ui/status")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("marketStatus").textContent = data.market_status;
+            document.getElementById("accountBalance").textContent = data.account_balance;
+        })
+        .catch(err => console.error("상태 불러오기 실패", err));
+}
+setInterval(fetchStatus, 10000);
+fetchStatus();
 
-// 5초마다 로그 갱신
+// ===== 주기적 로그 갱신 =====
 setInterval(fetchLogs, 5000);
 fetchLogs();
