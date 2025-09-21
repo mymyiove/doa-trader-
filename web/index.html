@@ -7,16 +7,32 @@
 </head>
 <body>
     <header>
-        <h1>DOA Trader</h1>
+        <div class="header-top">
+            <h1>💹 DOA Trader</h1>
+            <div class="market-info">
+                <div class="info-item">
+                    <span class="label">현재 시간</span>
+                    <span id="currentTime">--:--:--</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">시장 상태</span>
+                    <span id="marketStatus">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">계좌 잔고</span>
+                    <span id="accountBalance">-</span>
+                </div>
+            </div>
+        </div>
         <div class="buttons">
-            <button id="startBtn">시작</button>
-            <button id="stopBtn">종료</button>
-            <button id="killBtn">전체 중지</button>
+            <button id="startBtn">🚀 시작</button>
+            <button id="stopBtn">⏹ 종료</button>
+            <button id="killBtn">💥 긴급중지</button>
         </div>
     </header>
     <main>
         <section id="timeline">
-            <h2>실시간 로그</h2>
+            <h2>📜 실시간 로그</h2>
             <div id="logContainer"></div>
         </section>
     </main>
