@@ -1,3 +1,5 @@
+let priceChart;
+
 // ===== 로그 한 줄 추가 =====
 function addLog(entry) {
     const logContainer = document.getElementById("logContainer");
@@ -5,7 +7,6 @@ function addLog(entry) {
     div.className = `log-entry ${entry.type}`;
     div.innerHTML = `<strong>[${entry.timestamp}]</strong> ${entry.message}`;
     
-    // 세부 정보가 있으면 클릭 시 펼침
     if (entry.details && Object.keys(entry.details).length > 0) {
         const details = document.createElement("pre");
         details.textContent = JSON.stringify(entry.details, null, 2);
@@ -18,7 +19,7 @@ function addLog(entry) {
     logContainer.prepend(div);
 }
 
-// ===== 서버에서 로그 가져오기 =====
+// ===== 로그 가져오기 =====
 function fetchLogs() {
     fetch("/ui/logs")
         .then(res => res.json())
@@ -29,49 +30,7 @@ function fetchLogs() {
         .catch(err => console.error("로그 불러오기 실패", err));
 }
 
-// ===== 버튼 이벤트 =====
-document.getElementById("startBtn").addEventListener("click", () => {
-    fetch("/orders/start", { method: "POST" })
-        .then(res => res.json())
-        .then(data => addLog({
-            timestamp: new Date().toLocaleTimeString(),
-            type: "info",
-            message: "거래 시작",
-            details: data
-        }));
-});
-
-document.getElementById("stopBtn").addEventListener("click", () => {
-    fetch("/orders/stop", { method: "POST" })
-        .then(res => res.json())
-        .then(data => addLog({
-            timestamp: new Date().toLocaleTimeString(),
-            type: "info",
-            message: "거래 종료",
-            details: data
-        }));
-});
-
-document.getElementById("killBtn").addEventListener("click", () => {
-    fetch("/orders/kill", { method: "POST" })
-        .then(res => res.json())
-        .then(data => addLog({
-            timestamp: new Date().toLocaleTimeString(),
-            type: "error",
-            message: "긴급 중지",
-            details: data
-        }));
-});
-
-// ===== 현재 시간 표시 =====
-function updateTime() {
-    const now = new Date();
-    document.getElementById("currentTime").textContent = now.toLocaleTimeString();
-}
-setInterval(updateTime, 1000);
-updateTime();
-
-// ===== 시장 상태 & 계좌 잔고 갱신 =====
+// ===== 상태 가져오기 =====
 function fetchStatus() {
     fetch("/ui/status")
         .then(res => res.json())
@@ -81,9 +40,66 @@ function fetchStatus() {
         })
         .catch(err => console.error("상태 불러오기 실패", err));
 }
-setInterval(fetchStatus, 10000);
-fetchStatus();
 
-// ===== 주기적 로그 갱신 =====
-setInterval(fetchLogs, 5000);
-fetchLogs();
+// ===== 보유 종목 가져오기 =====
+function fetchHoldings() {
+    fetch("/ui/holdings")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector("#holdingsTable tbody");
+            tbody.innerHTML = "";
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">데이터 없음</td></tr>`;
+                return;
+            }
+            data.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${item.symbol}</td>
+                    <td>${item.name}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.avg_price}</td>
+                    <td>${item.current_price}</td>
+                    <td>${item.pnl}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(err => console.error("보유 종목 불러오기 실패", err));
+}
+
+// ===== 가격 차트 초기화 =====
+function initPriceChart() {
+    const ctx = document.getElementById("priceChart").getContext("2d");
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '가격',
+                data: [],
+                borderColor: '#00e676',
+                backgroundColor: 'rgba(0, 230, 118, 0.1)',
+                fill: true,
+                tension: 0.2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#e6edf3' } },
+                y: { ticks: { color: '#e6edf3' } }
+            }
+        }
+    });
+}
+
+// ===== 가격 데이터 갱신 =====
+function fetchPriceData() {
+    fetch("/ui/price")
+        .then(res => res.json())
+        .then(data => {
+            if (!priceChart) return;
+            priceChart.data.labels = data.map(p => p.time);
+            priceChart.data.datasets[0].data = data.map(p =>
