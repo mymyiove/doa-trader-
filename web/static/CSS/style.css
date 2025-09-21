@@ -1,39 +1,64 @@
-/* ===== 기본 레이아웃 ===== */
+/* ===== 전체 레이아웃 ===== */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Roboto, sans-serif;
     margin: 0;
-    background: #f4f4f4;
-    color: #333;
+    background: #121212;
+    color: #e0e0e0;
 }
 
 header {
-    background: #222;
-    color: #fff;
-    padding: 15px;
+    background: linear-gradient(90deg, #1f1f1f, #2a2a2a);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1px solid #333;
 }
 
 header h1 {
     margin: 0;
-    font-size: 1.5em;
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #00e676;
 }
 
 .buttons {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 button {
-    margin-right: 5px;
-    padding: 8px 14px;
+    margin-right: 10px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 4px;
-    background: #4CAF50;
-    color: white;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.9em;
+    transition: all 0.2s ease-in-out;
 }
 
-button:hover {
-    background: #45a049;
+#startBtn {
+    background: #00e676;
+    color: #000;
+}
+#startBtn:hover {
+    background: #00c853;
+}
+
+#stopBtn {
+    background: #ffeb3b;
+    color: #000;
+}
+#stopBtn:hover {
+    background: #fdd835;
+}
+
+#killBtn {
+    background: #ff5252;
+    color: #fff;
+}
+#killBtn:hover {
+    background: #e53935;
 }
 
 main {
@@ -41,59 +66,82 @@ main {
 }
 
 /* ===== 로그 영역 ===== */
-#timeline {
-    margin-top: 10px;
+#timeline h2 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #80cbc4;
 }
 
 #logContainer {
-    background: white;
-    padding: 10px;
-    border-radius: 5px;
-    min-height: 250px;
+    display: flex;
+    flex-direction: column-reverse; /* 최신 로그가 위로 */
+    gap: 8px;
     max-height: 500px;
     overflow-y: auto;
-    font-size: 0.9em;
-    line-height: 1.4;
 }
 
-/* ===== 로그 항목 ===== */
+/* ===== 로그 카드 ===== */
 .log-entry {
-    padding: 6px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-    transition: background 0.2s;
+    padding: 10px;
+    border-radius: 6px;
+    background: #1e1e1e;
+    border-left: 5px solid transparent;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    transition: transform 0.1s ease-in-out;
 }
-
 .log-entry:hover {
-    background: #f0f0f0;
+    transform: scale(1.01);
 }
 
 /* 타입별 색상 */
 .log-entry.info {
-    background: #eef;
+    border-color: #64b5f6;
 }
-
 .log-entry.decision {
-    background: #efe;
+    border-color: #81c784;
 }
-
 .log-entry.trade {
-    background: #ffe;
+    border-color: #ffd54f;
 }
-
 .log-entry.error {
-    background: #fee;
-    color: #b30000;
-    font-weight: bold;
+    border-color: #e57373;
 }
 
-/* 세부 정보 펼침 */
+/* 세부 정보 */
 .log-entry pre {
-    background: #fafafa;
+    background: #263238;
     padding: 8px;
-    margin-top: 5px;
+    margin-top: 6px;
     border-radius: 4px;
     font-size: 0.85em;
     white-space: pre-wrap;
     word-wrap: break-word;
+    color: #cfd8dc;
+}
+
+/* ===== 스크롤바 커스터마이징 ===== */
+#logContainer::-webkit-scrollbar {
+    width: 8px;
+}
+#logContainer::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+#logContainer::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 600px) {
+    header {
+        align-items: center;
+    }
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    button {
+        width: 100%;
+    }
 }
