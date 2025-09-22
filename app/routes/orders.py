@@ -1,23 +1,35 @@
 from fastapi import APIRouter
-from app.trade import executor
+from app.trading import executor
 from app.log import audit
 
 router = APIRouter()
 
 @router.post("/start")
 async def start_trading():
-    audit.record("거래 시작 명령 수신", "info")
-    executor.start()
-    return {"status": "started"}
+    try:
+        executor.start()
+        audit.record("거래 루프 시작됨 (수동)", "info")
+        return {"ok": True, "message": "거래 루프 시작"}
+    except Exception as e:
+        audit.record(f"거래 시작 실패: {e}", "error")
+        return {"ok": False, "message": f"시작 실패: {e}"}
 
 @router.post("/stop")
 async def stop_trading():
-    audit.record("거래 종료 명령 수신", "info")
-    executor.stop()
-    return {"status": "stopped"}
+    try:
+        executor.stop()
+        audit.record("거래 루프 중지됨 (수동)", "info")
+        return {"ok": True, "message": "거래 루프 중지"}
+    except Exception as e:
+        audit.record(f"거래 중지 실패: {e}", "error")
+        return {"ok": False, "message": f"중지 실패: {e}"}
 
 @router.post("/kill")
-async def kill_switch():
-    audit.record("긴급 중지 명령 수신", "error")
-    executor.kill()
-    return {"status": "killed"}
+async def kill_trading():
+    try:
+        executor.kill()
+        audit.record("거래 루프 긴급중지됨 (수동)", "warning")
+        return {"ok": True, "message": "긴급중지 완료"}
+    except Exception as e:
+        audit.record(f"긴급중지 실패: {e}", "error")
+        return {"ok": False, "message": f"긴급중지 실패: {e}"}
