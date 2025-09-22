@@ -1,18 +1,17 @@
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-from app.scheduler import start_schedulers
-from app.routes import dashboard, health, orders
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+from app.routes.dashboard import router as dashboard_router
+from app.scheduler import setup_scheduler
 
-app = FastAPI(title="DOA Trader", version="1.0")
+app = FastAPI()
 
-app.include_router(dashboard.router, prefix="/ui")
-app.include_router(health.router, prefix="/health")
-app.include_router(orders.router, prefix="/orders")
+# ✅ 정적 파일 서빙: /static → web/static/
+static_dir = Path(__file__).parent.parent / "web" / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-@app.on_event("startup")
-async def boot():
-    await start_schedulers()
+# ✅ UI 라우터 등록: /ui/price, /ui/status 등
+app.include_router(dashboard_router, prefix="/ui")
 
-@app.get("/")
-async def root():
-    return RedirectResponse(url="/ui/")
+# ✅ 스케줄러 등록 (장전/장중/장후 루틴)
+setup_scheduler(app)
