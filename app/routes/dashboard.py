@@ -1,21 +1,18 @@
+# app/routes/dashboard.py
+import os
+from pathlib import Path
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-from datetime import datetime, time, timedelta
-from zoneinfo import ZoneInfo
-from app.log import audit
-import os
 import httpx
+from app.log import audit
 
 router = APIRouter()
 
-# === 정적 파일 서빙 ===
+# === HTML 서빙 ===
 web_root = (Path(__file__).parent.parent.parent / "web").resolve()
-static_dir = (web_root / "static").resolve()
-router.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-# === 대시보드 HTML ===
 @router.get("/", response_class=HTMLResponse)
 async def dashboard_home(request: Request):
     html_path = (web_root / "index.html").resolve()
