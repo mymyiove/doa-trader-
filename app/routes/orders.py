@@ -1,6 +1,6 @@
 # app/routes/orders.py
 from fastapi import APIRouter
-from app.trading import executor
+from app.trade import executor   # ✅ trade로 변경
 from app.log import audit
 
 router = APIRouter()
